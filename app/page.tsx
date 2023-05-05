@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import TipForm from "@/components/TipForm"
@@ -13,6 +13,29 @@ export default function IndexPage() {
     noOfPeople: "",
     custom: "",
   })
+  const [nOpeopleError, setNOpeopleError] = useState<string | null>(null)
+
+  const tipPerPerson = useMemo(() => {
+    // use custom tip value if selected
+    if (tipValue === 0)
+      return Number(formData.bill) * (Number(formData.custom) / 100)
+    // Calculate tip per person
+    return Number(formData.bill) * (tipValue / 100)
+  }, [tipValue, formData.bill, formData.custom])
+
+  const totalPaid = useMemo(() => {
+    // Validate input
+    const noOfPeople = Number(formData.noOfPeople)
+    if (formData.noOfPeople === "" || noOfPeople === 0) {
+      setNOpeopleError("Can't be zero")
+      return 0
+    } else {
+      setNOpeopleError(null)
+    }
+
+    // Calculate total amount to be paid
+    return tipPerPerson * noOfPeople + Number(formData.bill)
+  }, [tipPerPerson, formData.noOfPeople, formData.bill])
 
   const handleTipSelect = (tip: number) => {
     setTipValue(tip)
@@ -30,7 +53,6 @@ export default function IndexPage() {
       setTipValue(0)
     }
   }
-  console.log(formData, tipValue, "formData")
   return (
     <section className="grid h-screen place-items-center items-center gap-6 pb-8 pt-6 lg:container md:py-10">
       <div className="flex max-w-[980px] flex-col items-center gap-20">
@@ -48,12 +70,13 @@ export default function IndexPage() {
               handleTipSelect={handleTipSelect}
               handleChange={handleChange}
               formData={formData}
+              nOpeopleError={nOpeopleError}
             />
           </div>
           <div className="flex flex-1 flex-col justify-between space-y-8 rounded-xl bg-secondary p-6 py-10">
             <div className="space-y-8">
-              <TipRow name="Tip Amount" amount={0} />
-              <TipRow name="Total" amount={0} />
+              <TipRow name="Tip Amount" amount={tipPerPerson ?? 0} />
+              <TipRow name="Total" amount={totalPaid ?? 0} />
             </div>
             <Button
               onClick={() => {

@@ -14,6 +14,7 @@ type Props = {
   setTipValue: (tip: number) => void
   handleTipSelect: (tip: number) => void
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  nOpeopleError: string | null
   formData: {
     bill: string
     noOfPeople: string
@@ -26,6 +27,7 @@ export default function TipForm({
   setTipValue,
   handleTipSelect,
   handleChange,
+  nOpeopleError,
   formData,
 }: Props) {
   return (
@@ -75,9 +77,14 @@ export default function TipForm({
         </div>
       </div>
       <div className="mt-4 grid w-full items-center gap-1.5">
-        <Label htmlFor="bill" className="text-md font-bold text-accent">
-          Number of People
-        </Label>
+        <div className="flex justify-between">
+          <Label htmlFor="bill" className="text-md font-bold text-accent">
+            Number of People
+          </Label>
+          {nOpeopleError && (
+            <p className="text-sm font-bold text-red-500">{nOpeopleError}</p>
+          )}
+        </div>
         <Input
           type="text"
           id="noOfPeople"
@@ -86,6 +93,7 @@ export default function TipForm({
           onChange={handleChange}
           placeholder="0"
           Icon={User}
+          error={nOpeopleError ? true : false}
         />
       </div>
     </>
