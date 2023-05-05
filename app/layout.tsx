@@ -4,7 +4,6 @@ import { Metadata } from "next"
 import { siteConfig } from "@/config/site"
 import { fontMono } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
-import { SiteHeader } from "@/components/site-header"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 
 export const metadata: Metadata = {
@@ -38,7 +37,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <div className="relative flex min-h-screen flex-col">
             <div className="flex-1 lg:container">{children}</div>
           </div>
-          <TailwindIndicator />
+          {/* <TailwindIndicator /> */}
         </body>
       </html>
     </>
