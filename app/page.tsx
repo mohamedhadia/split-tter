@@ -83,7 +83,7 @@ export default function IndexPage() {
                 // reset form data
                 document.forms[0].reset()
               }}
-              className="w-full rounded-sm text-xl font-bold uppercase text-secondary"
+              className="w-full rounded-sm text-xl font-bold uppercase text-secondary hover:bg-primary hover:opacity-60"
             >
               Reset
             </Button>
