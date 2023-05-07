@@ -15,27 +15,42 @@ export default function IndexPage() {
   })
   const [nOpeopleError, setNOpeopleError] = useState<string | null>(null)
 
-  const tipPerPerson = useMemo(() => {
+  const tipPerOrder = useMemo(() => {
     // use custom tip value if selected
     if (tipValue === 0)
-      return Number(formData.bill) * (Number(formData.custom) / 100)
-    // Calculate tip per person
-    return Number(formData.bill) * (tipValue / 100)
+      return (Number(formData.bill) * (Number(formData.custom) / 100)).toFixed(
+        2
+      )
+    // Calculate tip
+    return (Number(formData.bill) * (tipValue / 100)).toFixed(2)
   }, [tipValue, formData.bill, formData.custom])
 
   const totalPaid = useMemo(() => {
-    // Validate input
     const noOfPeople = Number(formData.noOfPeople)
+
+    // Validate input
     if (formData.noOfPeople === "" || noOfPeople === 0) {
       setNOpeopleError("Can't be zero")
       return 0
     } else {
       setNOpeopleError(null)
     }
-
     // Calculate total amount to be paid
-    return tipPerPerson * noOfPeople + Number(formData.bill)
-  }, [tipPerPerson, formData.noOfPeople, formData.bill])
+    return (+tipPerOrder + Number(formData.bill)).toFixed(2)
+  }, [formData.bill, tipPerOrder, formData.noOfPeople])
+
+  const totalPaidPerPerson = useMemo(() => {
+    const noOfPeople = Number(formData.noOfPeople)
+
+    // Validate input
+    if (formData.noOfPeople === "" || noOfPeople === 0) {
+      setNOpeopleError("Can't be zero")
+      return 0
+    } else {
+      setNOpeopleError(null)
+    }
+    return (+totalPaid / noOfPeople).toFixed(2)
+  }, [totalPaid, formData.noOfPeople])
 
   const handleTipSelect = (tip: number) => {
     setTipValue(tip)
@@ -75,8 +90,8 @@ export default function IndexPage() {
           </div>
           <div className="flex flex-1 flex-col justify-between space-y-8 rounded-xl bg-secondary p-6 py-10">
             <div className="space-y-8">
-              <TipRow name="Tip Amount" amount={tipPerPerson ?? 0} />
-              <TipRow name="Total" amount={totalPaid ?? 0} />
+              <TipRow name="Tip Amount" amount={+tipPerOrder || 0} />
+              <TipRow name="Total" amount={+totalPaidPerPerson || 0} />
             </div>
             <Button
               onClick={() => {
